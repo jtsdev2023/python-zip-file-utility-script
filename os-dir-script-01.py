@@ -57,7 +57,9 @@ def unzip_file(input_file: str, file_mode: str='r', dst_dir: str='.') -> None:
 parser = argparse.ArgumentParser(
     description='Script to list files in a directory')
 parser.add_argument(
-    '-d', '--dir', help='Directory to list files', required=True)
+    '-s', '--source', help='Source directory to list files', required=True)
+parser.add_argument(
+    '-d', '--destination', help='Destination directory to move files', required=True)
 args = parser.parse_args()
 argparse_error_msg = 'Error: Directory does not exist'
 
@@ -65,17 +67,17 @@ argparse_error_msg = 'Error: Directory does not exist'
 # run script
 if __name__ == '__main__':
     try:
-        if os.path.isdir(args.dir):
-            print('Directory: ' + args.dir)
+        if os.path.isdir(args.source):
+            print('Directory: ' + args.source)
             print('Files: ')
-            for file in os.listdir(args.dir):
+            for file in os.listdir(args.source):
                 pass
         else:
             print(argparse_error_msg)
     except Exception as e:
         print(e)
 
-    f = get_directory_content(args.dir)
+    f = get_directory_content(args.source)
 
     r_str = r"^\d{2}\-(stu|evr)\_.*\.zip$"
     r = re.compile(r_str, re.IGNORECASE)
@@ -83,7 +85,7 @@ if __name__ == '__main__':
     l = process_file(f, r)
     s = process_file_list(l, '.zip', '_', '-')
 
-    _dlist = create_new_directory(s, './tmp')
+    _dlist = create_new_directory(s, args.destination)
 
     _d = dict(zip(s, _dlist))
 
